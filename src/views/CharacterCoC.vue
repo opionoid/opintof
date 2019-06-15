@@ -1,5 +1,6 @@
 <template lang="pug">
   v-container(max-height="fill-height")
+    //- 基本情報
     v-layout(row)
       v-flex(xs4)
         v-text-field(v-model="character.name" label="名前")
@@ -9,23 +10,27 @@
         v-text-field(v-model="character.sex" label="性別")
       v-flex(xs4)
         v-text-field(v-model="character.job" label="職業")
+    //- ステータス
     v-layout(row wrap)
+      //-: メインステータス
       v-flex(xs8)
         v-layout(row wrap)
           v-flex(xs4 v-for="status in status_list")
             span {{ status.name }}
             span : {{ status.value }}
+      //-: サブステータス
       v-flex(xs4)
         v-layout(column)
           v-flex(xs4)
-            span.status_name アイデア
-            span.text-xs-right : {{ Idea }}
+            span アイデア
+            span : {{ Idea }}
           v-flex(xs4)
-            span.status_name 幸運
-            span.text-xs-right : {{ Luck }}
+            span 幸運
+            span : {{ Luck }}
           v-flex(xs4)
-            span.status_name 知識
-            span.status_value : {{ Knowledge }}
+            span 知識
+            span : {{ Knowledge }}
+    //- 可変ステータス
     v-layout(row wrap)
       v-flex(xs4)
         v-text-field(v-model="currentHP" label="HP")
@@ -33,10 +38,11 @@
         v-text-field(v-model="currentMP" label="MP")
       v-flex(xs4)
         v-text-field(v-model="currentSAN" label="SAN")
+    //- 技能
     v-layout(row wrap)
       v-flex(xs4 v-for="ability in ability_list")
-        span.status_name {{ ability.name }}
-        span.status_value : {{ ability.value }}
+        span {{ ability.name }}
+        span : {{ ability.value }}
 </template>
 
 <script>
@@ -89,7 +95,7 @@ export default {
   computed: {
     // 配列番号での指定は引用のみで有効．編集時は要spliceメソッド．
 
-    // 副次ステータス
+    // サブステータス
     Idea: function() {
       return this.status_list[2].value * 5;
     },
@@ -337,6 +343,7 @@ export default {
       ]
 
       // 職業技能割り振り
+      // TODO: 範囲を職業技能内に限定
       const eduP = this.status_list[7].value
       for (let i = 0; i < 20; i++) {
         let tmpIndex = Math.floor(Math.random() * 55)
@@ -367,7 +374,7 @@ export default {
 
   methods: {
     get2D6() {
-      return Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6);
+      return Math.floor(Math.random() * 6 + 1) + Math.floor(Math.random() * 6 + 1);
     },
     get3D6() {
       return (
