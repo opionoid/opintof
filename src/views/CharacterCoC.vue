@@ -1,32 +1,40 @@
 <template lang="pug">
-  v-container
+  v-container(max-height="fill-height")
     v-layout(row)
-      v-flex(xs4) {{ character.name }}
-      v-flex(xs2) {{ character.age }}
-      v-flex(xs2) {{ character.sex }}
-      v-flex(xs4) 職業: {{ character.job }}
+      v-flex(xs4)
+        v-text-field(v-model="character.name" label="名前")
+      v-flex(xs2)
+        v-text-field(v-model="character.age" label="年齢")
+      v-flex(xs2)
+        v-text-field(v-model="character.sex" label="性別")
+      v-flex(xs4)
+        v-text-field(v-model="character.job" label="職業")
     v-layout(row wrap)
-      v-flex(xs3 v-for="status in status_list")
-        span.status_name {{ status.name }}
-        span.status_value : {{ status.value }}
-      v-flex(xs3)
-        span.status_name アイデア
-        span.status_value : {{ Idea }}
-      v-flex(xs3)
-        span.status_name 幸運
-        span.status_value : {{ Luck }}
-      v-flex(xs3)
-        span.status_name 知識
-        span.status_value : {{ Knowledge }}
+      v-flex(xs8)
+        v-layout(row wrap)
+          v-flex(xs4 v-for="status in status_list")
+            span {{ status.name }}
+            span : {{ status.value }}
+      v-flex(xs4)
+        v-layout(column)
+          v-flex(xs4)
+            span.status_name アイデア
+            span.text-xs-right : {{ Idea }}
+          v-flex(xs4)
+            span.status_name 幸運
+            span.text-xs-right : {{ Luck }}
+          v-flex(xs4)
+            span.status_name 知識
+            span.status_value : {{ Knowledge }}
     v-layout(row wrap)
-      v-flex.mr-4(xs3)
+      v-flex(xs4)
         v-text-field(v-model="currentHP" label="HP")
-      v-flex.mr-4(xs3)
+      v-flex(xs4)
         v-text-field(v-model="currentMP" label="MP")
-      v-flex.mr-4(xs3)
+      v-flex(xs4)
         v-text-field(v-model="currentSAN" label="SAN")
     v-layout(row wrap)
-      v-flex(xs3 v-for="ability in ability_list")
+      v-flex(xs4 v-for="ability in ability_list")
         span.status_name {{ ability.name }}
         span.status_value : {{ ability.value }}
 </template>
@@ -36,10 +44,10 @@ export default {
   data() {
     return {
       character: {
-        name: "Yamada",
-        age: "28",
-        sex: "男",
-        job: "探偵"
+        name: "",
+        age: "",
+        sex: "",
+        job: ""
       },
       status_list: [
         { // 0
@@ -47,15 +55,15 @@ export default {
           value: this.get3D6()
         },
         { // 1
-          name: "CON",
+          name: "DEX",
           value: this.get3D6()
         },
         { // 2
-          name: "POW",
-          value: this.get3D6()
+          name: "INT",
+          value: this.get2D6() + 6
         },
         { // 3
-          name: "DEX",
+          name: "CON",
           value: this.get3D6()
         },
         { // 4
@@ -63,11 +71,11 @@ export default {
           value: this.get3D6()
         },
         { // 5
-          name: "SIZ",
+          name: "POW",
           value: this.get3D6()
         },
         { // 6
-          name: "INT",
+          name: "SIZ",
           value: this.get2D6() + 6
         },
         { // 7
@@ -83,17 +91,17 @@ export default {
 
     // 副次ステータス
     Idea: function() {
-      return this.status_list[6].value * 5;
+      return this.status_list[2].value * 5;
     },
     Luck: function() {
-      return this.status_list[2].value * 5;
+      return this.status_list[5].value * 5;
     },
     Knowledge: function() {
       return Math.min(this.status_list[7].value * 5, 99)
     },
     currentHP: function() {
       return Math.floor(
-        (this.status_list[1].value + this.status_list[5].value) / 2
+        (this.status_list[3].value + this.status_list[6].value) / 2
       );
     },
     currentMP: function() {
@@ -128,7 +136,7 @@ export default {
         },
         { // 6
           name: "回避",
-          value: this.status_list[3].value * 2
+          value: this.status_list[1].value * 2
         },
         { // 7
           name: "化学",
@@ -341,7 +349,7 @@ export default {
       }
 
       // 興味技能割り振り
-      const intP = this.status_list[6].value
+      const intP = this.status_list[2].value
       for (let i = 0; i < 10; i++) {
         let tmpIndex = Math.floor(Math.random() * 55)
         // もし82以上なら．INT18のとき99を超えるため除外

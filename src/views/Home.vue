@@ -3,7 +3,7 @@
 		v-container
 			v-layout.pa-4(justify-center)
 				#title
-					h1.display-4.pl-1 {{ trpg }}
+					h1.display-4.pl-1 TRPG
 					h1.display-2 きゃらんだむ
 			v-layout.pa-4(justify-center)
 				router-link(to="/select_system")
