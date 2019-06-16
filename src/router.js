@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import SelectSystem from './views/SelectSystem.vue'
-import CharacterCoC from './views/CharacterCoC.vue'
+import CoCSelectJob from './views/CoCSelectJob.vue'
+import CoCCharacter from './views/CoCCharacter.vue'
 
 Vue.use(Router)
 
@@ -16,14 +16,14 @@ export default new Router({
       component: Home
     },
     {
-      path: '/select_system',
-      name: 'slect_system',
-      component: SelectSystem
+      path: '/coc_select_job',
+      name: 'coc_select_job',
+      component: CoCSelectJob
     },
     {
-      path: '/character_coc',
-      name: 'character_coc',
-      component: CharacterCoC
+      path: '/coc_character',
+      name: 'coc_character',
+      component: CoCCharacter
     }
   ]
 })
