@@ -9,7 +9,7 @@
       v-flex(xs2)
         v-text-field(v-model="character.sex" label="性別")
       v-flex(xs4)
-        v-text-field(v-model="character.job" label="職業")
+        .tmp {{ currentJobName }}
     //- ステータス
     v-layout(row wrap)
       //-: メインステータス
@@ -103,8 +103,6 @@ export default {
   },
 
   computed: {
-    // 配列番号での指定は引用のみで有効．編集時は要spliceメソッド．
-
     // サブステータス
     Idea: function() {
       return this.status_list[2].value * 5;
@@ -128,282 +126,282 @@ export default {
     },
 
     // 職業技能をVuexから取得
-    ...mapState("CoC", ["job.abilities"]),
+    ...mapState("CoC", ["currentJobName", "currentJobAbilities"]),
     // 技能
     ability_list: function() {
       let abilities = [
         {
-          // 1
+          // 0
           name: "言いくるめ",
           value: 5
         },
         {
-          // 2
+          // 1
           name: "医学",
           value: 5
         },
         {
-          // 3
+          // 2
           name: "運転（自動車）",
           value: 20
         },
         {
-          // 4
+          // 3
           name: "応急手当",
           value: 30
         },
         {
-          // 5
+          // 4
           name: "オカルト",
           value: 5
         },
         {
-          // 6
+          // 5
           name: "回避",
           value: this.status_list[1].value * 2
         },
         {
-          // 7
+          // 6
           name: "化学",
           value: 1
         },
         {
-          // 8
+          // 7
           name: "鍵開け",
           value: 1
         },
         {
-          // 9
+          // 8
           name: "隠す",
           value: 15
         },
         {
-          // 10
+          // 9
           name: "隠れる",
           value: 10
         },
         {
-          // 11
+          // 10
           name: "機械修理",
           value: 20
         },
         {
-          // 12
+          // 11
           name: "聞き耳",
           value: 25
         },
         {
-          // 13
+          // 12
           name: "芸術",
           value: 5
         },
         {
-          // 14
+          // 13
           name: "経理",
           value: 10
         },
         {
-          // 15
+          // 14
           name: "考古学",
           value: 1
         },
         {
-          // 16
+          // 15
           name: "コンピュータ",
           value: 1
         },
         {
-          // 17
+          // 16
           name: "忍び歩き",
           value: 10
         },
         {
-          // 18
+          // 17
           name: "写真術",
           value: 10
         },
         {
-          // 19
+          // 18
           name: "重機械操作",
           value: 1
         },
         {
-          // 20
+          // 19
           name: "乗馬",
           value: 5
         },
         {
-          // 21
+          // 20
           name: "信用",
           value: 15
         },
         {
-          // 22
+          // 21
           name: "心理学",
           value: 5
         },
         {
-          // 23
+          // 22
           name: "人類学",
           value: 1
         },
         {
-          // 24
+          // 23
           name: "水泳",
           value: 25
         },
         {
-          // 25
+          // 24
           name: "製作",
           value: 5
         },
         {
-          // 26
+          // 25
           name: "精神分析",
           value: 1
         },
         {
-          // 27
+          // 26
           name: "生物学",
           value: 1
         },
         {
-          // 28
+          // 27
           name: "説得",
           value: 15
         },
         {
-          // 29
+          // 28
           name: "操縦",
           value: 1
         },
         {
-          // 30
+          // 29
           name: "地質学",
           value: 1
         },
         {
-          // 31
+          // 30
           name: "跳躍",
           value: 25
         },
         {
-          // 32
+          // 31
           name: "追跡",
           value: 10
         },
         {
-          // 33
+          // 32
           name: "電気修理",
           value: 10
         },
         {
-          // 34
+          // 33
           name: "電子工学",
           value: 1
         },
         {
-          // 35
+          // 34
           name: "天文学",
           value: 1
         },
         {
-          // 36
+          // 35
           name: "投擲",
           value: 25
         },
         {
-          // 37
+          // 36
           name: "登攀",
           value: 40
         },
         {
-          // 38
+          // 37
           name: "図書館",
           value: 25
         },
         {
-          // 39
+          // 38
           name: "ナビゲート",
           value: 10
         },
         {
-          // 40
+          // 39
           name: "値切り",
           value: 5
         },
         {
-          // 41
+          // 40
           name: "博物学",
           value: 10
         },
         {
-          // 42
+          // 41
           name: "物理学",
           value: 1
         },
         {
-          // 43
+          // 42
           name: "変装",
           value: 1
         },
         {
-          // 44
+          // 43
           name: "法律",
           value: 5
         },
         {
-          // 45
+          // 44
           name: "ほかの言語",
           value: 1
         },
         {
-          // 46
+          // 45
           name: "母国語",
           value: Math.min(this.status_list[7].value * 5, 99)
         },
         {
-          // 47
+          // 46
           name: "マーシャルアーツ",
           value: 1
         },
         {
-          // 48
+          // 47
           name: "目星",
           value: 25
         },
         {
-          // 49
+          // 48
           name: "薬学",
           value: 1
         },
         {
-          // 50
+          // 49
           name: "歴史",
           value: 20
         },
         {
-          // 51
+          // 50
           name: "拳銃",
           value: 20
         },
         {
-          // 52
+          // 51
           name: "キック",
           value: 25
         },
         {
-          // 53
+          // 52
           name: "組みつき",
           value: 25
         },
         {
-          // 54
+          // 53
           name: "こぶし",
           value: 50
         },
         {
-          // 55
+          // 54
           name: "頭突き",
           value: 10
         }
@@ -412,7 +410,7 @@ export default {
       // 職業技能割り振り
       const eduP = this.status_list[7].value;
       let tmpArray = [];
-      Object.assign(tmpArray, this.job.abilities);
+      Object.assign(tmpArray, this.currentJobAbilities);
       for (let i = 0; i < 20; i++) {
         let tmpIndex = tmpArray[Math.floor(Math.random() * tmpArray.length)];
         // もし79以上なら，EDU21のとき99を超えるため除外
@@ -426,7 +424,7 @@ export default {
       // 興味技能割り振り
       const intP = this.status_list[2].value;
       for (let i = 0; i < 10; i++) {
-        let tmpIndex = Math.floor(Math.random() * 55);
+        let tmpIndex = Math.floor(Math.random() * 54);
         // もし82以上なら．INT18のとき99を超えるため除外
         if (abilities[tmpIndex].value > 82) {
           i--;
