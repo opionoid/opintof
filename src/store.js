@@ -12,7 +12,7 @@ const CoC = {
   },
   mutations: {
     apply_job(state, payload) {
-      Object.assign(state.currentJobName, payload.name)
+      state.currentJobName = payload.name
       Object.assign(state.currentJobAbilities, payload.abilities)
     }
   }
