@@ -1,7 +1,8 @@
 <template lang="pug">
+#character
   v-container(max-height="fill-height")
     //- 基本情報
-    v-layout(row)
+    v-layout.my-2(row)
       v-flex(xs4)
         v-text-field(v-model="character.name" label="名前")
       v-flex(xs2)
@@ -9,29 +10,33 @@
       v-flex(xs2)
         v-text-field(v-model="character.sex" label="性別")
       v-flex(xs4)
-        .tmp {{ currentJobName }}
+        .job_name_box.pa-4.ml-4.yellow {{ currentJobName }}
     //- ステータス
     v-layout(row wrap)
       //-: メインステータス
       v-flex(xs8)
         v-layout(row wrap)
-          v-flex(xs4 v-for="status in status_list")
-            span {{ status.name }}
-            span : {{ status.value }}
+          v-flex.pa-1(xs4 v-for="status in status_list")
+            v-layout(row)
+              v-flex(xs6) {{ status.name }}
+              v-flex(xs6) {{ status.value }}
       //-: サブステータス
       v-flex(xs4)
         v-layout(column)
-          v-flex(xs4)
-            span アイデア
-            span : {{ Idea }}
-          v-flex(xs4)
-            span 幸運
-            span : {{ Luck }}
-          v-flex(xs4)
-            span 知識
-            span : {{ Knowledge }}
+          v-flex.pa-1(xs4)
+            v-layout(row)
+              v-flex(xs6) アイデア
+              v-flex(xs6) {{ Idea }}
+          v-flex.pa-1(xs4)
+            v-layout(row)
+              v-flex(xs6) 幸運
+              v-flex(xs6) {{ Luck }}
+          v-flex.pa-1(xs4)
+            v-layout(row)
+              v-flex(xs6)  知識
+              v-flex(xs6) {{ Knowledge }}
     //- 可変ステータス
-    v-layout(row wrap)
+    v-layout.my-2(row wrap)
       v-flex(xs4)
         v-text-field(v-model="currentHP" label="HP")
       v-flex(xs4)
@@ -40,9 +45,10 @@
         v-text-field(v-model="currentSAN" label="SAN")
     //- 技能
     v-layout(row wrap)
-      v-flex(xs4 v-for="ability in ability_list")
-        span {{ ability.name }}
-        span : {{ ability.value }}
+      v-flex.pa-1(xs6 sm4 v-for="ability in ability_list")
+        v-layout(row)
+          v-flex(xs8 :class="{'yellow--text': ability.value >= 70}") {{ ability.name }}
+          v-flex.pr-4(xs4 :class="{'yellow--text': ability.value >= 70}") {{ ability.value }}
 </template>
 
 <script>
@@ -457,3 +463,9 @@ export default {
   }
 };
 </script>
+
+<style lang="stylus" scoped>
+#character
+  background-color indigo
+  padding-bottom 10vh
+</style>

@@ -23,22 +23,20 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-#top-bg {
-  background-color: yellow;
-}
+#top-bg
+  background-color yellow
 
-#top {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  color: rgb(245, 245, 245);
-  background-color: indigo;
-  padding-top: 20vh;
-  clip-path: polygon(0 24%, 15% 0, 100% 0, 100% 76%, 85% 100%, 0 100%);
-}
+#top
+  width 100vw
+  height 100vh
+  overflow hidden
+  color rgb(245, 245, 245)
+  background-color indigo
+  padding-top 20vh
+  clip-path: polygon(0 24%, 15% 0, 100% 0, 100% 76%, 85% 100%, 0 100%)
 
 .btn > span {
-  font-size: 3rem;
+  font-size 3rem
 }
 
 .btn {

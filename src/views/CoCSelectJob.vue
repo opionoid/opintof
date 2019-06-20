@@ -1,15 +1,16 @@
 <template lang="pug">
 #select_job
-  v-container
-    v-layout(row wrap)
-      v-flex(xs4 v-for="job in job_list" @click="apply_job(job)")
-        router-link(to="/coc_character")
-          v-card.test.pa-4(flat color="transparent")
-            v-layout(justify-center wrap)
-              v-icon(x-large color="white" :class="{ hovered: hover }") {{ job.icon }}
-            v-layout
-              v-card-title.mx-auto
-                h4.white--text {{ job.name }}
+	v-container
+		v-layout(row wrap)
+			v-flex(xs4 v-for="job in job_list" @click="apply_job(job)")
+				router-link(to="/coc_character")
+					v-card.pa-4(flat height="200" color="transparent" :class="{ hovered: hover === job.name}" @mouseenter="hover = job.name" @mouseleave="hover = ''")
+						v-layout(justify-center wrap)
+							v-icon.card-icon(x-large) {{ job.icon }}
+						v-layout
+							v-card-title.mx-auto
+								h4.card-title {{ job.name }}
+
 </template>
 
 <script>
@@ -18,7 +19,7 @@ import { mapMutations } from "vuex";
 export default {
   data() {
     return {
-      hover: true,
+      hover: "",
       job_list: [
         {
           name: "ビジネスマン",
@@ -126,21 +127,25 @@ export default {
     };
   },
   methods: {
-    ...mapMutations("CoC", ["apply_job"]),
-
-    changeCardColor: function(color) {
-      this.card_color = color;
-    }
+    ...mapMutations("CoC", ["apply_job"])
   }
 };
 </script>
 
 <style lang="stylus" scoped>
-#select_job {
-  color: rgb(245, 245, 245);
-  background-color: indigo;
-  height: 300vh;
-  overflow: hidden;
-}
+#select_job
+  color white
+  background-color indigo
+  padding-bottom 10vh
+  overflow hidden
+
+.hovered .card-icon, .hovered .card-title
+  color yellow
+
+.hovered .card-icon
+	padding none
+
+.hovered .card-title
+	font-size 22px
 </style>
 
