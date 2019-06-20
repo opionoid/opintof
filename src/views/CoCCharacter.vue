@@ -10,7 +10,7 @@
       v-flex(xs2)
         v-text-field(v-model="character.sex" label="性別")
       v-flex(xs4)
-        .job_name_box.pa-4.ml-4.yellow {{ currentJobName }}
+        .job_name_box.pa-4.ml-4.title {{ currentJobName }}
     //- ステータス
     v-layout(row wrap)
       //-: メインステータス
