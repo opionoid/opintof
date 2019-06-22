@@ -1,5 +1,5 @@
 <template lang="pug">
-#character
+#character(ref="screenShot")
   v-container(max-height="fill-height")
     //- 基本情報
     v-layout.my-2(row)
@@ -10,7 +10,7 @@
       v-flex(xs2)
         v-text-field(v-model="character.sex" label="性別")
       v-flex(xs4)
-        .job_name_box.pa-4.ml-4.title {{ currentJobName }}
+        .job_name_box.pa-4.ml-4 {{ currentJobName }}
     //- ステータス
     v-layout(row wrap)
       //-: メインステータス
@@ -47,8 +47,15 @@
     v-layout(row wrap)
       v-flex.pa-1(xs6 sm4 v-for="ability in ability_list")
         v-layout(row)
-          v-flex(xs8 :class="{'yellow--text': ability.value >= 70}") {{ ability.name }}
-          v-flex.pr-4(xs4 :class="{'yellow--text': ability.value >= 70}") {{ ability.value }}
+          v-flex.pl-4(xs8 :class="{'yellow--text': ability.value >= 70}") {{ ability.name }}
+          v-flex.pr-4(xs4 :class="{'yellow--text': ability.value >= 70}" text-xs-right) {{ ability.value }}
+    v-layout.mt-4.py-4(row wrap justify-center text-xs-center)
+      v-flex(xs4)
+        v-btn(flat fab @click="print")
+          v-icon(x-large) assignment_returned
+      v-flex(xs4)
+        v-btn(flat fab @click="reload")
+          v-icon(x-large) replay
 </template>
 
 <script>
@@ -57,6 +64,7 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
+      screenURL: "",
       character: {
         name: "",
         age: "",
@@ -459,6 +467,26 @@ export default {
     },
     get1D100() {
       return Math.floor(Math.random() * 100 + 1);
+    },
+
+    async print() {
+      const el = this.$refs.screenShot;
+      // add option type to get the image version
+      // if not provided the promise will return
+      // the canvas.
+      const options = {
+        type: "dataURL"
+      };
+      this.screenURL = await this.$html2canvas(el, options);
+
+      let link = document.createElement("a");
+      link.href = this.screenURL;
+      link.download = "CoCCharacterSheet.png";
+      link.click();
+    },
+
+    reload() {
+      window.location.reload();
     }
   }
 };
