@@ -9,7 +9,7 @@ const CoC = {
   state: {
     currentJobName: "",
     currentJobAbilities: [],
-    slackURL: "https://hooks.slack.com/services/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"
+    slackURL: ""
   },
   mutations: {
     apply_job(state, payload) {
