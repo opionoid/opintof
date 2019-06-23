@@ -4,40 +4,40 @@
     //- 基本情報
     v-layout.my-2(row)
       v-flex(xs4)
-        v-text-field(v-model="character.name" label="名前")
+        v-text-field.px-4(v-model="character.name" label="名前")
       v-flex(xs2)
-        v-text-field(v-model="character.age" label="年齢")
+        v-text-field.px-4(v-model="character.age" label="年齢")
       v-flex(xs2)
-        v-text-field(v-model="character.sex" label="性別")
+        v-text-field.px-4(v-model="character.sex" label="性別")
       v-flex(xs4)
         .job_name_box.pa-4.ml-4 {{ currentJobName }}
     //- ステータス
     v-layout(row wrap)
       //-: メインステータス
-      v-flex(xs8)
+      v-flex(xs9)
         v-layout(row wrap)
-          v-flex.pa-1(xs4 v-for="(status, i) in status_list")
+          v-flex.py-2(xs4 v-for="(status, i) in status_list")
             v-layout(row @click="rollIntoSlack(status_skills[i])")
-              v-flex(xs6) {{ status.name }}
-              v-flex(xs6) {{ status.value }}
+              v-flex.pl-4(xs6) {{ status.name }}
+              v-flex.pr-4(xs6 text-xs-right) {{ status.value }}
       //-: サブステータス
-      v-flex(xs4)
+      v-flex(xs3)
         v-layout(column)
-          v-flex.pa-1(xs4 v-for="sub_status in sub_status_list")
+          v-flex.py-2(xs4 v-for="sub_status in sub_status_list")
             v-layout(row @click="rollIntoSlack(sub_status)")
-              v-flex(xs6) {{ sub_status.name }}
-              v-flex(xs6) {{ sub_status.value }}
+              v-flex.pl-4(xs6) {{ sub_status.name }}
+              v-flex.pr-4(xs6 text-xs-right) {{ sub_status.value }}
     //- 可変ステータス
     v-layout.my-2(row wrap)
       v-flex(xs4)
-        v-text-field(v-model="currentHP" label="HP")
+        v-text-field.px-4(v-model="currentHP" label="HP")
       v-flex(xs4)
-        v-text-field(v-model="currentMP" label="MP")
+        v-text-field.px-4(v-model="currentMP" label="MP")
       v-flex(xs4)
-        v-text-field(v-model="currentSAN" label="SAN")
+        v-text-field.px-4(v-model="currentSAN" label="SAN")
     //- 技能
     v-layout(row wrap)
-      v-flex.pa-1(xs6 sm4 v-for="ability in ability_list")
+      v-flex.py-2(xs6 sm4 v-for="ability in ability_list")
         v-layout(row @click="rollIntoSlack(ability)")
           v-flex.pl-4(xs8 :class="{'yellow--text': ability.value >= 70}") {{ ability.name }}
           v-flex.pr-4(xs4 :class="{'yellow--text': ability.value >= 70}" text-xs-right) {{ ability.value }}
@@ -432,7 +432,7 @@ export default {
         },
         {
           // 46
-          name: "マーシャルアーツ",
+          name: "ﾏｰｼｬﾙｱｰﾂ",
           value: 1
         },
         {
@@ -640,20 +640,3 @@ export default {
   background-color indigo
   padding-bottom 10vh
 </style>
-
-curl -X POST --data-urlencode "payload={\"attachments\":[{\"fallback\":\"歴史: 成功！\",\"color\":\"#00FF00\",\"fields\":[{\"title\":\"歴史: 成功！\",\"value\":\"1D100 = 1 ≦ 20\"}]}]}" https://hooks.slack.com/services/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
-
-{
-  "attachments": [
-    {
-      "fallback":"歴史: 成功！",
-      "color":"#00FF00",
-      "fields": [
-        {
-          "title":"歴史: 成功！",
-          "value":"1D100 で 11 を出し，20以下を達成しました．"
-        }
-      ]
-    }
-  ]
-}"

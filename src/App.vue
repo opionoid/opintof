@@ -16,9 +16,8 @@ export default {
 </script>
 
 <style lang="stylus">
-a {
-  text-decoration: none;
-  color: white;
-}
+a
+  text-decoration none
+  color white
 </style>
 
