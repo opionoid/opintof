@@ -46,7 +46,7 @@
     //- 技能
     v-layout(row wrap)
       v-flex.pa-1(xs6 sm4 v-for="ability in ability_list")
-        v-layout(row)
+        v-layout(row @click="rollIntoSlack(ability)")
           v-flex.pl-4(xs8 :class="{'yellow--text': ability.value >= 70}") {{ ability.name }}
           v-flex.pr-4(xs4 :class="{'yellow--text': ability.value >= 70}" text-xs-right) {{ ability.value }}
     v-layout.mt-4.py-4(row wrap justify-center text-xs-center)
@@ -60,10 +60,12 @@
 
 <script>
 import { mapState } from "vuex";
+import axios from "axios"
 
 export default {
   data() {
     return {
+      slackMessage: "",
       screenURL: "",
       character: {
         name: "",
@@ -449,7 +451,6 @@ export default {
 
       return abilities;
     }
-    // 探偵：職業技能「言いくるめ，鍵開け，心理学，追跡，図書館，法律，目星，（1：聞き耳，写真術，値切り，こぶし／パンチ）」
   },
 
   methods: {
@@ -469,11 +470,55 @@ export default {
       return Math.floor(Math.random() * 100 + 1);
     },
 
+    // 1つの関数に複数の機能があるので，必要ならば分離してください
+    rollIntoSlack(ability) {
+      // 1. 技能ロールの成否を判定
+      const dice = this.get1D100()
+      const success_bool = (dice <= ability.value) ? true : false
+      
+      // 2.  IncommingWebhookでSlackに通知を飛ばす
+      // 2.a Slack用メッセージの生成
+      if (success_bool) {
+        this.slackMessage = {
+          "atatchments": [
+            {
+              "fallback": ability.name + ": 成功！",
+              "color": "#00FF00",
+              "fields": [
+                {
+                  "title": ability.name + ": 成功！",
+                  "value": "1D100 = " + dice + " ≦ " + ability.value
+                }
+              ]
+            }
+          ]
+        }
+      } else {
+        this.slackMessage = {
+          "atatchments": [
+            {
+              "fallback": ability.name + ": 失敗！",
+              "color": "#D00000",
+              "fields": [
+                {
+                  "title": ability.name + ": 失敗！",
+                  "value": "1D100 = " + dice + " ≧ " + ability.value
+                }
+              ]
+            }
+          ]
+        }
+      }
+      // 2.b SlackにPOST
+      const data = JSON.stringify(this.slackMessage)
+      console.log(data)
+
+      axios.post("https://hooks.slack.com/services/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", data)
+    },
+
+    // vue-html2canvas を使用，画面全体を画像としてダウンロード
     async print() {
       const el = this.$refs.screenShot;
-      // add option type to get the image version
-      // if not provided the promise will return
-      // the canvas.
       const options = {
         type: "dataURL"
       };
