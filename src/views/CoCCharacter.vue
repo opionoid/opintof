@@ -16,25 +16,17 @@
       //-: メインステータス
       v-flex(xs8)
         v-layout(row wrap)
-          v-flex.pa-1(xs4 v-for="status in status_list")
-            v-layout(row)
+          v-flex.pa-1(xs4 v-for="(status, i) in status_list")
+            v-layout(row @click="rollIntoSlack(status_skills[i])")
               v-flex(xs6) {{ status.name }}
               v-flex(xs6) {{ status.value }}
       //-: サブステータス
       v-flex(xs4)
         v-layout(column)
-          v-flex.pa-1(xs4)
-            v-layout(row)
-              v-flex(xs6) アイデア
-              v-flex(xs6) {{ Idea }}
-          v-flex.pa-1(xs4)
-            v-layout(row)
-              v-flex(xs6) 幸運
-              v-flex(xs6) {{ Luck }}
-          v-flex.pa-1(xs4)
-            v-layout(row)
-              v-flex(xs6)  知識
-              v-flex(xs6) {{ Knowledge }}
+          v-flex.pa-1(xs4 v-for="sub_status in sub_status_list")
+            v-layout(row @click="rollIntoSlack(sub_status)")
+              v-flex(xs6) {{ sub_status.name }}
+              v-flex(xs6) {{ sub_status.value }}
     //- 可変ステータス
     v-layout.my-2(row wrap)
       v-flex(xs4)
@@ -49,10 +41,26 @@
         v-layout(row @click="rollIntoSlack(ability)")
           v-flex.pl-4(xs8 :class="{'yellow--text': ability.value >= 70}") {{ ability.name }}
           v-flex.pr-4(xs4 :class="{'yellow--text': ability.value >= 70}" text-xs-right) {{ ability.value }}
+    //- ユーティリティ
     v-layout.mt-4.py-4(row wrap justify-center text-xs-center)
+      //- スクリーンショットのダウンロード
       v-flex(xs4)
         v-btn(flat fab @click="print")
           v-icon(x-large) assignment_returned
+      //- Slackとの連携
+      v-flex(xs4)
+        v-btn(flat fab @click.stop="slack_dialog = true")
+          v-img(:src="require('@/assets/Slack_Mark_Monochrome_White.svg')")
+        v-dialog(v-model="slack_dialog" max-width="400")
+          v-card
+            v-card-title(primary-title)
+              v-img(:src="require('@/assets/Slack_Monochrome_White.svg')")
+            v-card-text Slackアプリの IncomingWebhook が提供する WebhookURL をコピーしてください．このURLはメンバー以外に公開しないでください．
+            v-text-field.pa-4(v-model="slackURL" label="WebhookURL")
+            v-card-actions
+              v-spacer
+              v-btn(flat @click="slack_dialog = false") 完了
+      //- リロード
       v-flex(xs4)
         v-btn(flat fab @click="reload")
           v-icon(x-large) replay
@@ -67,6 +75,7 @@ export default {
     return {
       slackMessage: "",
       screenURL: "",
+      slack_dialog: false,
       character: {
         name: "",
         age: "",
@@ -119,15 +128,60 @@ export default {
   },
 
   computed: {
+    status_skills: function() {
+      let status_skills = [
+        {
+          name: "筋力",
+          value: this.status_list[0].value * 5
+        },
+        {
+          name: "精密操作",
+          value: this.status_list[1].value * 5
+        },
+        {
+          name: "アイデア",
+          value: this.status_list[2].value * 5
+        },
+        {
+          name: "耐久",
+          value: this.status_list[3].value * 5
+        },
+        {
+          name: "第一印象",
+          value: this.status_list[4].value * 5
+        },
+        {
+          name: "精神",
+          value: this.status_list[5].value * 5
+        },
+        {
+          name: "サイズ",
+          value: this.status_list[6].value * 5
+        },
+        {
+          name: "知識",
+          value: Math.min(this.status_list[7].value * 5, 99)
+        }
+      ]
+      return status_skills
+    },
     // サブステータス
-    Idea: function() {
-      return this.status_list[2].value * 5;
-    },
-    Luck: function() {
-      return this.status_list[5].value * 5;
-    },
-    Knowledge: function() {
-      return Math.min(this.status_list[7].value * 5, 99);
+    sub_status_list: function() {
+      const sub_status = [
+        {
+          name: "アイデア",
+          value: this.status_list[2].value * 5
+        },
+        {
+          name: "幸運",
+          value: this.status_list[5].value * 5
+        },
+        {
+          name: "知識",
+          value: Math.min(this.status_list[7].value * 5, 99)
+        }
+      ]
+      return sub_status
     },
     currentHP: function() {
       return Math.floor(
@@ -142,7 +196,7 @@ export default {
     },
 
     // 職業技能をVuexから取得
-    ...mapState("CoC", ["currentJobName", "currentJobAbilities"]),
+    ...mapState("CoC", ["currentJobName", "currentJobAbilities", "slackURL"]),
     // 技能
     ability_list: function() {
       let abilities = [
@@ -479,41 +533,83 @@ export default {
       // 2.  IncommingWebhookでSlackに通知を飛ばす
       // 2.a Slack用メッセージの生成
       if (success_bool) {
-        this.slackMessage = {
-          "atatchments": [
-            {
-              "fallback": ability.name + ": 成功！",
-              "color": "#00FF00",
-              "fields": [
-                {
-                  "title": ability.name + ": 成功！",
-                  "value": "1D100 = " + dice + " ≦ " + ability.value
-                }
-              ]
-            }
-          ]
+        if (dice <= 5) {
+          this.slackMessage = {
+            "attachments": [
+              {
+                "fallback": ability.name + ": クリティカル！",
+                "color": "#00ffff",
+                "fields": [
+                  {
+                    "title": ability.name + ": クリティカル！",
+                    "value": "1D100 = " + dice + " ≦ " + ability.value
+                  }
+                ]
+              }
+            ]
+          }
+        } else {
+          this.slackMessage = {
+            "attachments": [
+              {
+                "fallback": ability.name + ": 成功！",
+                "color": "#00FF00",
+                "fields": [
+                  {
+                    "title": ability.name + ": 成功！",
+                    "value": "1D100 = " + dice + " ≦ " + ability.value
+                  }
+                ]
+              }
+            ]
+          }
         }
       } else {
-        this.slackMessage = {
-          "atatchments": [
-            {
-              "fallback": ability.name + ": 失敗！",
-              "color": "#D00000",
-              "fields": [
-                {
-                  "title": ability.name + ": 失敗！",
-                  "value": "1D100 = " + dice + " ≧ " + ability.value
-                }
-              ]
-            }
-          ]
+        if (dice >= 96) {
+          this.slackMessage = {
+            "attachments": [
+              {
+                "fallback": ability.name + ": ファンブル……",
+                "color": "#4b0082",
+                "fields": [
+                  {
+                    "title": ability.name + ": ファンブル……",
+                    "value": "1D100 = " + dice + " ≧ " + ability.value
+                  }
+                ]
+              }
+            ]
+          }
+        } else {
+          this.slackMessage = {
+            "attachments": [
+              {
+                "fallback": ability.name + ": 失敗……",
+                "color": "#D00000",
+                "fields": [
+                  {
+                    "title": ability.name + ": 失敗……",
+                    "value": "1D100 = " + dice + " ≧ " + ability.value
+                  }
+                ]
+              }
+            ]
+          }
         }
       }
       // 2.b SlackにPOST
       const data = JSON.stringify(this.slackMessage)
       console.log(data)
 
-      axios.post("https://hooks.slack.com/services/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", data)
+      axios({
+        method: "POST",
+        url: this.slackURL,
+        data: data,
+        header: {
+          "Access-Controll-Allow-Headers": "Content-Type",
+          "Content-Type": "application/json"
+        }
+      })
     },
 
     // vue-html2canvas を使用，画面全体を画像としてダウンロード
@@ -530,6 +626,8 @@ export default {
       link.click();
     },
 
+    openSlackModal() {},
+
     reload() {
       window.location.reload();
     }
@@ -542,3 +640,20 @@ export default {
   background-color indigo
   padding-bottom 10vh
 </style>
+
+curl -X POST --data-urlencode "payload={\"attachments\":[{\"fallback\":\"歴史: 成功！\",\"color\":\"#00FF00\",\"fields\":[{\"title\":\"歴史: 成功！\",\"value\":\"1D100 = 1 ≦ 20\"}]}]}" https://hooks.slack.com/services/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
+
+{
+  "attachments": [
+    {
+      "fallback":"歴史: 成功！",
+      "color":"#00FF00",
+      "fields": [
+        {
+          "title":"歴史: 成功！",
+          "value":"1D100 で 11 を出し，20以下を達成しました．"
+        }
+      ]
+    }
+  ]
+}"
