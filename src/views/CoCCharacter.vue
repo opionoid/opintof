@@ -56,10 +56,10 @@
             v-card-title(primary-title)
               v-img(:src="require('@/assets/Slack_Monochrome_White.svg')")
             v-card-text Slackアプリの IncomingWebhook が提供する WebhookURL をコピーしてください．このURLはメンバー以外に公開しないでください．
-            v-text-field.pa-4(v-model="slackURL" label="WebhookURL")
+            v-text-field.pa-4(v-model="slackURLLocal" label="WebhookURL")
             v-card-actions
               v-spacer
-              v-btn(flat @click="apply_slackURL(slackURL); slack_dialog = false") 完了
+              v-btn(flat @click="apply_slackURL(slackURLLocal); slack_dialog = false") 完了
       //- リロード
       v-flex(xs4)
         v-btn(flat fab @click="reload")
@@ -68,6 +68,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { mapMutations } from "vuex";
 import axios from "axios"
 
 export default {
@@ -76,7 +77,7 @@ export default {
       slackMessage: "",
       screenURL: "",
       slack_dialog: false,
-      slackURL: "",
+      slackURLLocal: "",
       character: {
         name: "",
         age: "",
@@ -631,8 +632,6 @@ export default {
       link.download = "CoCCharacterSheet.png";
       link.click();
     },
-
-    openSlackModal() {},
 
     reload() {
       window.location.reload();
