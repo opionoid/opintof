@@ -41,8 +41,12 @@
         v-layout(row @click="rollIntoSlack(ability)")
           v-flex.pl-4(xs8 :class="{'yellow--text': ability.value >= 70}") {{ ability.name }}
           v-flex.pr-4(xs4 :class="{'yellow--text': ability.value >= 70}" text-xs-right) {{ ability.value }}
-    //- ユーティリティ
+    //- ユーティリティエリアの表示切り替え
     v-layout.mt-4.py-4(row wrap justify-center text-xs-center)
+      v-btn(flat fab @click="showUtilityArea = !showUtilityArea")
+        v-icon(x-large) {{ showUtilityArea ? "visibility" : "visibility_off" }}
+    //- ユーティリティエリア
+    v-layout.mt-4.py-4(row wrap justify-center text-xs-center v-if="showUtilityArea")
       //- スクリーンショットのダウンロード
       v-flex(xs4)
         v-btn(flat fab @click="print")
@@ -78,6 +82,7 @@ export default {
       screenURL: "",
       slack_dialog: false,
       slackURLLocal: "",
+      showUtilityArea: true,
       character: {
         name: "",
         age: "",
@@ -606,7 +611,6 @@ export default {
       }
       // 2.b SlackにPOST
       const data = JSON.stringify(this.slackMessage)
-      console.log(data)
 
       axios({
         method: "POST",
