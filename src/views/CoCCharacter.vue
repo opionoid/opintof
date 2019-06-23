@@ -59,7 +59,7 @@
             v-text-field.pa-4(v-model="slackURL" label="WebhookURL")
             v-card-actions
               v-spacer
-              v-btn(flat @click="slack_dialog = false") 完了
+              v-btn(flat @click="apply_slackURL(slackURL); slack_dialog = false") 完了
       //- リロード
       v-flex(xs4)
         v-btn(flat fab @click="reload")
@@ -76,6 +76,7 @@ export default {
       slackMessage: "",
       screenURL: "",
       slack_dialog: false,
+      slackURL: "",
       character: {
         name: "",
         age: "",
@@ -508,6 +509,7 @@ export default {
   },
 
   methods: {
+    ...mapMutations("CoC", ["apply_slackURL"]),
     get2D6() {
       return (
         Math.floor(Math.random() * 6 + 1) + Math.floor(Math.random() * 6 + 1)
@@ -538,6 +540,7 @@ export default {
             "attachments": [
               {
                 "fallback": ability.name + ": クリティカル！",
+                "pretext": this.character.name,
                 "color": "#00ffff",
                 "fields": [
                   {
@@ -553,6 +556,7 @@ export default {
             "attachments": [
               {
                 "fallback": ability.name + ": 成功！",
+                "pretext": this.character.name,
                 "color": "#00FF00",
                 "fields": [
                   {
@@ -570,6 +574,7 @@ export default {
             "attachments": [
               {
                 "fallback": ability.name + ": ファンブル……",
+                "pretext": this.character.name,
                 "color": "#4b0082",
                 "fields": [
                   {
@@ -585,6 +590,7 @@ export default {
             "attachments": [
               {
                 "fallback": ability.name + ": 失敗……",
+                "pretext": this.character.name,
                 "color": "#D00000",
                 "fields": [
                   {
