@@ -2,9 +2,9 @@
 #top-bg
 	#top
 		v-container
-			v-layout.pa-4(justify-center)
+			v-layout.pa-4(justify-center text-xs-center)
 				#title
-					h1.display-4.pl-1 TRPG
+					h1.display-4 CoC
 					h1.display-2 きゃらんだむ
 			v-layout.pa-4(justify-center)
 				router-link(to="/coc_select_job")

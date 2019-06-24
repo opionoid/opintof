@@ -1,4 +1,4 @@
-# opintof
+# TRPG きゃらんだむ
 
 ## Project setup
 ```

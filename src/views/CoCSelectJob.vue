@@ -8,7 +8,7 @@
 						v-layout(justify-center wrap)
 							v-icon.card-icon(x-large) {{ job.icon }}
 						v-layout
-							v-card-title.mx-auto
+							v-card-title.mx-auto(text-xs-center)
 								h4.card-title {{ job.name }}
 
 </template>
@@ -141,11 +141,14 @@ export default {
 
 .hovered .card-icon, .hovered .card-title
   color yellow
+	transition all .2s ease
+  cursor pointer
 
 .hovered .card-icon
 	padding none
 
 .hovered .card-title
-	font-size 22px
+	letter-spacing 8px
+	transition all .2s ease
 </style>
 

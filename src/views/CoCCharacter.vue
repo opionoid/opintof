@@ -698,4 +698,7 @@ export default {
 .hovered
   transition all .2s ease
   cursor pointer
+  letter-spacing 3px
+  padding 8px
+  filter opacity(.8)
 </style>
