@@ -16,15 +16,31 @@
       //-: メインステータス
       v-flex(xs9)
         v-layout(row wrap)
-          v-flex.py-2(xs4 v-for="(status, i) in status_list")
-            v-layout(row @click="rollIntoSlack(status_skills[i])")
+          v-flex.py-2(
+            xs4
+            v-for="(status, i) in status_list"
+            @click="rollIntoSlack(status_skills[i])"
+            :class="{ hovered: hover === status.name}"
+            @mouseenter="hover = status.name"
+            @mouseleave="hover = ''"
+          )
+            v-layout(
+                row 
+              )
               v-flex.pl-4(xs6) {{ status.name }}
               v-flex.pr-4(xs6 text-xs-right) {{ status.value }}
       //-: サブステータス
       v-flex(xs3)
         v-layout(column)
-          v-flex.py-2(xs4 v-for="sub_status in sub_status_list")
-            v-layout(row @click="rollIntoSlack(sub_status)")
+          v-flex.py-2(
+            xs4
+            v-for="sub_status in sub_status_list"
+            @click="rollIntoSlack(sub_status)"
+            :class="{ hovered: hover === sub_status.name}"
+            @mouseenter="hover = sub_status.name"
+            @mouseleave="hover = ''"
+          )
+            v-layout(row)
               v-flex.pl-4(xs6) {{ sub_status.name }}
               v-flex.pr-4(xs6 text-xs-right) {{ sub_status.value }}
     //- 可変ステータス
@@ -37,10 +53,28 @@
         v-text-field.px-4(v-model="currentSAN" label="SAN")
     //- 技能
     v-layout(row wrap)
-      v-flex.py-2(xs6 sm4 v-for="ability in ability_list")
-        v-layout(row @click="rollIntoSlack(ability)")
+      v-flex.py-2(
+        xs6
+        sm4
+        v-for="ability in ability_list"
+        @click="rollIntoSlack(ability)"
+        :class="{ hovered: hover === ability.name}"
+        @mouseenter="hover = ability.name"
+        @mouseleave="hover = ''"
+      )
+        v-layout(row)
           v-flex.pl-4(xs8 :class="{'yellow--text': ability.value >= 70}") {{ ability.name }}
           v-flex.pr-4(xs4 :class="{'yellow--text': ability.value >= 70}" text-xs-right) {{ ability.value }}
+      v-flex(
+        xs6
+        sm4
+      )
+        v-text-field.px-4(
+          v-model="abilityCoC.value"
+          label="クトゥルフ神話"
+          :append-outer-icon="abilityCoC.value ? 'send' : 'microphone'"
+          @click:append-outer="rollIntoSlack(abilityCoC)"
+        )
     //- ユーティリティエリアの表示切り替え
     v-layout.mt-4.py-4(row wrap justify-center text-xs-center)
       v-btn(flat fab @click="showUtilityArea = !showUtilityArea")
@@ -78,6 +112,7 @@ import axios from "axios"
 export default {
   data() {
     return {
+      hover: "",
       slackMessage: "",
       screenURL: "",
       slack_dialog: false,
@@ -130,7 +165,11 @@ export default {
           name: "EDU",
           value: this.get3D6() + 3
         }
-      ]
+      ],
+      abilityCoC: {
+        name: "クトゥルフ神話",
+        value: 0
+      }
     };
   },
 
@@ -611,6 +650,7 @@ export default {
       }
       // 2.b SlackにPOST
       const data = JSON.stringify(this.slackMessage)
+      console.log(data)
 
       axios({
         method: "POST",
@@ -648,4 +688,10 @@ export default {
 #character
   background-color indigo
   padding-bottom 10vh
+
+.hovered
+  transition all .2s ease
+  cursor pointer
+  letter-spacing 8px
+  filter opacity(.8)
 </style>
