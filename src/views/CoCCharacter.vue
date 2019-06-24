@@ -50,7 +50,12 @@
       v-flex(xs4)
         v-text-field.px-4(v-model="currentMP" label="MP")
       v-flex(xs4)
-        v-text-field.px-4(v-model="currentSAN" label="SAN")
+        v-text-field.px-4(
+          v-model="currentSAN.value"
+          label="SAN"
+          :append-outer-icon="currentSAN.value ? 'wifi' : 'wifi_off'"
+          @click:append-outer="rollIntoSlack(currentSAN)"
+        )
     //- 技能
     v-layout(row wrap)
       v-flex.py-2(
@@ -65,14 +70,11 @@
         v-layout(row)
           v-flex.pl-4(xs8 :class="{'yellow--text': ability.value >= 70}") {{ ability.name }}
           v-flex.pr-4(xs4 :class="{'yellow--text': ability.value >= 70}" text-xs-right) {{ ability.value }}
-      v-flex(
-        xs6
-        sm4
-      )
+      v-flex(xs6 sm4)
         v-text-field.px-4(
           v-model="abilityCoC.value"
           label="クトゥルフ神話"
-          :append-outer-icon="abilityCoC.value ? 'send' : 'microphone'"
+          :append-outer-icon="abilityCoC.value ? 'wifi' : 'wifi_off'"
           @click:append-outer="rollIntoSlack(abilityCoC)"
         )
     //- ユーティリティエリアの表示切り替え
@@ -238,7 +240,11 @@ export default {
       return this.status_list[2].value;
     },
     currentSAN: function() {
-      return this.status_list[2].value * 5;
+      let currentSAN = {
+        name: "SAN",
+        value: Math.min(this.status_list[2].value * 5, 99 - this.abilityCoC.value)
+      }
+      return currentSAN
     },
 
     // 職業技能をVuexから取得
@@ -692,6 +698,4 @@ export default {
 .hovered
   transition all .2s ease
   cursor pointer
-  letter-spacing 8px
-  filter opacity(.8)
 </style>
