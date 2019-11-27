@@ -1,4 +1,4 @@
-# TRPG きゃらんだむ
+# CoC きゃらんだむ
 
 ## Project setup
 ```

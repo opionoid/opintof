@@ -148,7 +148,8 @@ export default {
 	padding none
 
 .hovered .card-title
-	letter-spacing 8px
+	letter-spacing 0.5em
+  text-indent 0.5em
 	transition all .2s ease
 </style>
 
